@@ -5,6 +5,7 @@ from sit_handler import Sit
 from sensor_data import SensorData
 from hue_controller import HueController
 from dotenv import load_dotenv
+import time
 
 # Load environment variables
 load_dotenv()
@@ -93,12 +94,20 @@ try:
 
         if key == 'chair-sensor-1' and sensor_read is not None and sensor_read.sit_status:
             sit_counter += 1
-            hue.turn_on_light()
             print(f"Sit Down Event Received. Sit counter is: {sit_counter}")
 
             if sit_counter == 100:
                 print("100 SITS ACHIEVED VERY POGGERS")
+                data = {"scene": "q5pVqBrNrB8yFlFO"}
+                hue.make_api_call_to_group(data,1)
+                data = {"on": True}
+                time.sleep(5)
+                hue.make_api_call_to_group(data,89)
+                hue.turn_on_light()
                 sit_counter = 0
+            else: 
+                hue.turn_on_light()
+
 
         elif sensor_read is not None and not sensor_read.sit_status:
             hue.turn_off_light()

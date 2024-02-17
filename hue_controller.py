@@ -22,8 +22,9 @@ class HueController:
             self.off_config = {}
             self.on_config = {}
 
-    def make_api_call_to_group(self, data):
-        url = f'http://{self.bridge_ip}/api/{self.user_token}/groups/{self.group_id}/action'
+    def make_api_call_to_group(self, data, group_id=None):
+        target_group_id = group_id if group_id is not None else self.group_id
+        url = f'http://{self.bridge_ip}/api/{self.user_token}/groups/{target_group_id}/action'
         response = requests.put(url, json=data)
         return response.json()
     
