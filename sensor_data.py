@@ -1,7 +1,6 @@
 import json
 import time
 import logging
-from flask import jsonify
 from utility import Utility
 
 class SensorData:
