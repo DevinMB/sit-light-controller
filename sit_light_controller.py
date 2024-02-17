@@ -12,7 +12,7 @@ load_dotenv()
 # Hue Controller setup
 BRIDGE_IP = os.getenv('BRIDGE_IP')
 USER_TOKEN = os.getenv('USER_TOKEN')
-light_id = os.getenv('LIGHT_ID')
+
 hue = HueController(BRIDGE_IP, USER_TOKEN)
 
 # Kafka Consumer Configuration
@@ -93,7 +93,7 @@ try:
 
         if key == 'chair-sensor-1' and sensor_read is not None and sensor_read.sit_status:
             sit_counter += 1
-            hue.turn_on_light(light_id)
+            hue.turn_on_light()
             print(f"Sit Down Event Received. Sit counter is: {sit_counter}")
 
             if sit_counter == 100:
@@ -101,7 +101,7 @@ try:
                 sit_counter = 0
 
         elif sensor_read is not None and not sensor_read.sit_status:
-            hue.turn_off_light(light_id)
+            hue.turn_off_light()
             print("Sit Up Event Received")
 except KeyboardInterrupt:
     print("Consumer stopped.")
