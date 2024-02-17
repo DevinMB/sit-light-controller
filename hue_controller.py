@@ -15,8 +15,8 @@ class HueController:
         self.group_id = os.getenv('GROUP_ID')
         # Parse environment variables after ensuring they're loaded
         try:
-            self.off_config = json.loads(os.getenv('LIGHT_OFF_CONFIG'))
-            self.on_config = json.loads(os.getenv('LIGHT_ON_CONFIG'))
+            self.off_config = json.loads(os.getenv('OFF_CONFIG'))
+            self.on_config = json.loads(os.getenv('ON_CONFIG'))
         except json.JSONDecodeError:
             print("Error decoding JSON from environment variables")
             self.off_config = {}
