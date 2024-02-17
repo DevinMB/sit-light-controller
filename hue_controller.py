@@ -30,12 +30,10 @@ class HueController:
         return response.json()
 
     def turn_on_light(self, light_id):
-        print(os.getenv('LIGHT_ON_CONFIG'))
         data = self.on_config
         return self.make_api_call_to_light(light_id, data)
 
     def turn_off_light(self, light_id):
-        print(os.getenv('LIGHT_OFF_CONFIG'))
         data = self.off_config
         return self.make_api_call_to_light(light_id, data)
 
