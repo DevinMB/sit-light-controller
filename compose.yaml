@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  python-kafka-tensorflow:
+    image: python:3.8-slim
+    restart: always
+    command: tail -f /dev/null
+    volumes:
+      - sit_light_controller:/data  
+    tty: true  
+    container_name: sit-light-controller-container
+    environment:
+      - TZ=America/Detroit
+      - RELEASE_VERSION=${RELEASE_VERSION}
+      - BRIDGE_IP=${BRIDGE_IP}
+      - USER_TOKEN=${USER_TOKEN}
+      - BROKER=${BROKER}
+      - LIGHT_ID=${LIGHT_ID}
+      - LIGHT_OFF_CONFIG=${LIGHT_OFF_CONFIG}
+      - LIGHT_ON_CONFIG=${LIGHT_ON_CONFIG}
+
+    networks:
+      - alpine-net
+    entrypoint: |
+      /bin/bash -c "
+      apt-get update && apt-get install -y --no-install-recommends git curl python3-venv;
+      python3 -m venv /venv;
+      source /venv/bin/activate;
+      pip install --no-cache-dir pytz kafka-python python-dotenv requests python-telegram-bot schedule fastapi aiohttp;
+
+      if [ ! -d /data/whisper-text-send-bot-v${RELEASE_VERSION} ]; then
+        mkdir -p /data/whisper-text-send-bot-v${RELEASE_VERSION} && \
+        curl -L https://github.com/DevinMB/whisper-text-send-bot/archive/refs/tags/v${RELEASE_VERSION}.tar.gz | tar xz --strip-components=1 -C /data/whisper-text-send-bot-v${RELEASE_VERSION};
+      fi
+      
+      python3 /data/whisper-text-send-bot-v${RELEASE_VERSION}/whisper_text_send_bot.py;
+      "
+
+networks:
+  alpine-net:
+    driver: bridge
+
+volumes:
+  sit_light_controller:  
+
+
+
+
+version: '3.8'
+
+services:
+  alpine-python:
+    image: alpine:latest
+    restart: always
+    command: tail -f /dev/null
+    volumes:
+      - sit_light_controller:/data  
+    tty: true  
+    container_name: sit-light-controller-container
+    environment:
+      - TZ=America/Detroit  
+    networks:
+      - alpine-net
+    entrypoint: |
+      /bin/sh -c "
+      apk add --no-cache python3 py3-pip git;
+      pip3 install pytz --break-system-packages;
+      pip3 install kafka-python --break-system-packages;
+      pip3 install python-dotenv --break-system-packages;
+      pip3 install requests --break-system-packages;
+      if [ ! -d /data/LoadCell-Kafka ]; then
+        git clone https://github.com/DevinMB/LoadCell-Kafka.git /data/LoadCell-Kafka;
+      fi
+      sleep 10;
+      python3 /data/LoadCell-Kafka/kafka_light_controller.py;
+
+      "
+
+networks:
+  alpine-net:
+    driver: bridge
+
+volumes:
+  sit_light_controller:  
