@@ -112,6 +112,7 @@ try:
         elif sensor_read is not None and not sensor_read.sit_status:
             hue.turn_off_light()
             print("Sit Up Event Received")
+            
 except KeyboardInterrupt:
     print("Consumer stopped.")
 except Exception as e:

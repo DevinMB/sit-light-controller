@@ -34,12 +34,12 @@ class HueController:
         return response.json()
 
     def turn_on_light(self):
+        self.set_previous_light_config()
         data = self.on_config
         if(self.control_type == 'LIGHT'):
             return self.make_api_call_to_light(data)
         if(self.control_type == 'GROUP'):
             return self.make_api_call_to_group(data)
-
 
     def turn_off_light(self):
         data = self.off_config
@@ -47,5 +47,15 @@ class HueController:
             return self.make_api_call_to_light(data)
         if(self.control_type == 'GROUP'):
             return self.make_api_call_to_group(data)
+    
+    def set_previous_light_config(self):
+        url = f'http://{self.bridge_ip}/api/{self.user_token}/lights/{self.light_id}'
+        response = requests.get(url)
+        previous_state = {
+            "on": response["state"]["on"],
+            "bri": response["state"]["bri"],
+            "xy": response["state"]["xy"]
+        }
+        self.off_config = previous_state
 
 
