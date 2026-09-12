@@ -4,7 +4,6 @@ services:
   python-kafka-tensorflow:
     image: python:3.8-slim
     restart: always
-    command: tail -f /dev/null
     volumes:
       - sit_light_controller:/data  
     tty: true  
@@ -12,12 +11,14 @@ services:
     environment:
       - TZ=America/Detroit
       - RELEASE_VERSION=${RELEASE_VERSION}
-      - BRIDGE_IP=${BRIDGE_IP}
-      - USER_TOKEN=${USER_TOKEN}
       - BROKER=${BROKER}
-      - LIGHT_ID=${LIGHT_ID}
-      - LIGHT_OFF_CONFIG=${LIGHT_OFF_CONFIG}
-      - LIGHT_ON_CONFIG=${LIGHT_ON_CONFIG}
+      # Home Assistant replaces the Philips Hue bridge
+      - HA_BASE_URL=${HA_BASE_URL}
+      - HA_TOKEN=${HA_TOKEN}
+      - HA_ENTITY_ID=${HA_ENTITY_ID}
+      - GROUP_OR_LIGHT=${GROUP_OR_LIGHT}
+      - OFF_CONFIG=${OFF_CONFIG}
+      - ON_CONFIG=${ON_CONFIG}
 
     networks:
       - alpine-net
